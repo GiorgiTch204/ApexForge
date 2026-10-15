@@ -1,0 +1,43 @@
+rules_version = '2';
+// ApexForge Firestore rules. The Android app syncs into users/{uid}/{workouts,routines,water,bodyWeights,settings}.
+// Roles live in Firebase Auth custom claims (token role == 'admin'), set only by the Cloud Function in
+// functions/src/index.ts. Never trust a role stored in a user-editable document.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    // .get(key, default) matters: reading a claim that was never set would otherwise raise an error and deny the request.
+    function isAdmin() { return signedIn() && request.auth.token.get('role', '') == 'admin'; }
+    function notSuspended() { return signedIn() && request.auth.token.get('suspended', false) != true; }
+
+    // Profile: owner reads/writes their own, but can never change role or suspension fields.
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid) && notSuspended()
+        && !('role' in request.resource.data) && !('suspended' in request.resource.data);
+      allow update: if isOwner(uid) && notSuspended()
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'suspended', 'createdAt']);
+      allow delete: if false; // deletion goes through the deleteUserData function
+    }
+
+    // Synced training data, one subtree per user.
+    match /users/{uid}/{collection}/{docId} {
+      allow read, write: if isOwner(uid) && notSuspended()
+        && collection in ['workouts', 'routines', 'water', 'bodyWeights', 'settings'];
+      allow read: if isAdmin(); // admins may read for support, but not write
+    }
+
+    // Admin-managed catalog additions (custom exercises shipped to everyone).
+    match /exerciseCatalog/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // Append-only audit trail written by Cloud Functions (Admin SDK bypasses rules).
+    match /auditLog/{id} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+  }
+}

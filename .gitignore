@@ -1,0 +1,19 @@
+*.iml
+.gradle/
+/local.properties
+/keystore.properties
+*.jks
+*.keystore
+.idea/
+.DS_Store
+/build
+/app/build
+/captures
+.externalNativeBuild
+.cxx
+google-services.json
+
+# Firebase backend
+backend/functions/node_modules/
+backend/functions/lib/
+.firebase/

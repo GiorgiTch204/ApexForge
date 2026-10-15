@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ApexForge mark: an "A" whose crossbar is the forge spark. 288dp canvas, icon inside the safe circle. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="288dp"
+    android:height="288dp"
+    android:viewportWidth="288"
+    android:viewportHeight="288">
+    <path
+        android:fillColor="#C6FF3D"
+        android:pathData="M144,84 L196,204 L168,204 L144,148 L120,204 L92,204 Z" />
+    <path
+        android:fillColor="#C6FF3D"
+        android:pathData="M131,172 L157,172 L157,184 L131,184 Z" />
+</vector>

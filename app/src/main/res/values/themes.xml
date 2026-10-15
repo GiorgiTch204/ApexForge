@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Theme used once the system splash is gone. Compose draws everything. -->
+    <style name="Theme.ApexForge" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/af_black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- Android 12+ system splash (also back-ported by core-splashscreen) -->
+    <style name="Theme.ApexForge.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/af_black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.ApexForge</item>
+    </style>
+</resources>
